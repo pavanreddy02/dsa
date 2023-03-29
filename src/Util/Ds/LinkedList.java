@@ -128,7 +128,9 @@ public class LinkedList<T> {
 
         return true;
     }
-    public LinkedListNode<Integer> intersectionOfLists(LinkedList l1, LinkedList l2){
+
+    // correct the below method
+    public LinkedListNode<Integer> intersectionOfLists(LinkedList<Integer> l1, LinkedList<Integer> l2){
         LinkedListNode<Integer> a = l1.head;
         LinkedListNode<Integer> b = l2.head;
 
@@ -213,6 +215,14 @@ class LinkedListNode<T> {
         if (this == o) return true;
         if (!(o instanceof LinkedListNode<?> that)) return false;
         return Objects.equals(next, that.next) && data.equals(that.data);
+    }
+
+    @Override
+    public String toString() {
+        return "LinkedListNode{" +
+                "next=" + next +
+                ", data=" + data +
+                '}';
     }
 
     @Override
