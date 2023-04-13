@@ -10,7 +10,7 @@ public class MissingNo {
 
     static int missingNo(int[] a) {
         Arrays.sort(a);
-        int count = 0;
+        int count = a[0];
         for (int aa : a) if (aa != count++) return --count;
         return 0;
     }

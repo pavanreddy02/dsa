@@ -1,6 +1,5 @@
-package Easy;
+package src.Easy;
 
-import Util.DsaUtility;
 
 import java.util.ArrayList;
 import java.util.Arrays;

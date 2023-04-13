@@ -15,13 +15,11 @@ public class FirstUniqueCharInStr {
         for (Character c: s.toCharArray()){
             charVsCount.put(c, charVsCount.getOrDefault(c, 0) +1);
         }
-        int index = 0;
         for ( Map.Entry<Character, Integer> charVsCount1 : charVsCount.entrySet()){
             if (charVsCount1.getValue() == 1) {
-                System.out.println(index);
+                System.out.println(s.indexOf(charVsCount1.getKey()));
                 return charVsCount1.getKey();
             }
-            index ++;
         }
         return ans;
     }

@@ -6,13 +6,13 @@ import java.util.List;
 public class MoveZeros {
     public static void main(String[] args) {
         int[] a = {0, 1, 0, 3, 12};
-        int[] b = {1, 3, 12, 0, 0};
         moveZeros(a);
+        System.out.println(Arrays.toString(a));
+
     }
 
     static void moveZeros(int[] a) {
 //        List<Integer> list = new java.util.ArrayList<>(Arrays.stream(a).boxed().toList());
-        System.out.println(Arrays.toString(a));
         int count = 0;
         for (int i : a) {
             if (i != 0) {
@@ -20,6 +20,5 @@ public class MoveZeros {
             }
         }
         while (count < a.length) a[count++] = 0;
-        System.out.println(Arrays.toString(a));
     }
 }

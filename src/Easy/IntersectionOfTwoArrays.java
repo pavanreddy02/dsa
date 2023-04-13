@@ -33,7 +33,7 @@ public class IntersectionOfTwoArrays {
         List<Integer> ans = new ArrayList<>();
         List<Integer> al = Arrays.stream(a).parallel().boxed().collect(Collectors.toList());
         List<Integer> bl = Arrays.stream(b).boxed().collect(Collectors.toList());
-        if (al.size() > bl.size()) {
+        if (al.size() >= bl.size()) {
             for (Integer in : al) {
                 if (bl.contains(in)) {
                     bl.remove(in);

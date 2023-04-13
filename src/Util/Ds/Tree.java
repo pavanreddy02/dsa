@@ -1,15 +1,29 @@
 package Util.Ds;
 
+import src.Util.Ds.DoubleLinkedList;
+import src.Util.Ds.DoubleLinkedListNode;
+
 import java.util.*;
 import java.util.LinkedList;
 
 public class Tree<T> {
-
+    static DoubleLinkedList<Integer> dll = new DoubleLinkedList<>();
+    static DoubleLinkedListNode<Integer> prev = null , head =null;
     private TreeNode<T> root;
+
+    private TreeNode<T> temp;
 
     public Tree() {
         this.root = null;
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///
+    /// This section contains insert
+    ///
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
     public void insert(T value) {
 //        System.out.println(value.getClass());
@@ -24,13 +38,6 @@ public class Tree<T> {
                 throw new RuntimeException(value.getClass() + "is not supported");
             }
         }
-    }
-
-    public boolean contains(TreeNode<T> currentNode, T value) {
-        if (currentNode == null) return false;
-        if (currentNode.value == value) return true;
-        if ((int) currentNode.value < (int) value) return contains(currentNode.leftChild, value);
-        return contains(currentNode.rightChild, value);
     }
 
     private void insertHelperInteger(TreeNode<T> currentNode, TreeNode<T> newNode) {
@@ -54,7 +61,7 @@ public class Tree<T> {
     }
 
     public TreeNode<T> insert(TreeNode<T> root, T value) {
-        if (root == null) return root = new TreeNode<>(value);
+        if (root == null) return new TreeNode<>(value);
         if ((int) root.value > (int) value) {
             root.leftChild = insert(root.leftChild, value);
         } else if (((int) root.value < (int) value)) {
@@ -84,15 +91,44 @@ public class Tree<T> {
         }
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///
+    /// This section contains traversal
+    ///
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     public void inOrderTraversal() {
-        inOrderTraversalHelper(this.root);
+        inOrderTraversalHelper(this.root, new LinkedList<>());
     }
 
-    private void inOrderTraversalHelper(TreeNode<T> currentNode) {
-        if (currentNode == null) return;
-        inOrderTraversalHelper(currentNode.leftChild);
-        System.out.println(currentNode.value);
-        inOrderTraversalHelper(currentNode.rightChild);
+    private LinkedList<T> inOrderTraversalHelper(TreeNode<T> currentNode, LinkedList<T> list) {
+        if (currentNode == null) return new LinkedList<>();
+        inOrderTraversalHelper(currentNode.leftChild, list);
+        list.add(currentNode.value);
+        inOrderTraversalHelper(currentNode.rightChild, list);
+        return list;
+    }
+
+    public LinkedList<T> inorderTraversal() {
+        TreeNode<T> current = this.root;
+        Stack<TreeNode<T>> stack = new Stack<>();
+        LinkedList<T> result = new LinkedList<>();
+        while (current != null || !stack.isEmpty()) {
+            // Push all left nodes onto the stack
+            while (current != null) {
+                stack.push(current);
+                current = current.leftChild;
+            }
+
+            // Visit the top node of the stack and move to its right child
+            current = stack.pop();
+            result.add(current.value);
+            current = current.rightChild;
+        }
+
+        return  result;
     }
 
     public void preOrderTraversal() {
@@ -110,63 +146,11 @@ public class Tree<T> {
         postOrderTraversalHelper(this.root);
     }
 
-    public int height() {
-        return heightHelper(this.root);
-    }
-
-    public int min() {
-        return minHelper(this.root);
-    }
-
-    private int minHelper(TreeNode<T> root) {
-        if (root == null) return Integer.MAX_VALUE;
-        return Math.min((int) root.value, Math.min(minHelper(root.leftChild), minHelper(root.rightChild)));
-    }
-
-    public int max() {
-        return this.maxHelper(this.root);
-    }
-
-    int maxHelper(TreeNode<T> root) {
-        if (root == null) return Integer.MIN_VALUE;
-        return Math.max((int) root.value, Math.max(maxHelper(root.leftChild), maxHelper(root.rightChild)));
-    }
-
-    public int size() {
-        return getSize(this.root);
-    }
-
-    public int getSize(TreeNode<T> root) {
-        if (root == null) return 0;
-        return 1 + getSize(root.leftChild) + getSize(root.rightChild);
-    }
-
-    private int heightHelper(TreeNode<T> currentNode) {
-        if (currentNode == null) return 0;
-        int leftHeight = heightHelper(currentNode.leftChild);
-        int rightHeight = heightHelper(currentNode.rightChild);
-        return 1 + Math.max(leftHeight, rightHeight);
-    }
-
     private void postOrderTraversalHelper(TreeNode<T> currentNode) {
         if (currentNode == null) return;
         postOrderTraversalHelper(currentNode.leftChild);
         postOrderTraversalHelper(currentNode.rightChild);
         System.out.println(currentNode.value);
-    }
-
-    public void printCurrentLevel(int level){
-        printCurrentLevelHelper(this.root, level);
-    }
-
-    void printCurrentLevelHelper(TreeNode<T> root, int level){
-        if (root == null) return;
-        if (level == 1) {
-            System.out.println(root.value);
-        }else if (level >0){
-            printCurrentLevelHelper(root.leftChild, level-1);
-            printCurrentLevelHelper(root.rightChild, level-1);
-        }
     }
 
     public void levelOrderTraversalByQueue(boolean byHashMap) {
@@ -225,6 +209,199 @@ public class Tree<T> {
         map.get(level).add(data);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///
+    /// This section contains utils
+    ///
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public int height() {
+        return heightHelper(this.root);
+    }
+
+    private int heightHelper(TreeNode<T> currentNode) {
+        if (currentNode == null) return 0;
+        int leftHeight = heightHelper(currentNode.leftChild);
+        int rightHeight = heightHelper(currentNode.rightChild);
+//        System.out.println(leftHeight + rightHeight);
+        return 1 + Math.max(leftHeight, rightHeight);
+    }
+
+    public int maxDepth(){ return maxDepthHelper(this.root); }
+
+    private int maxDepthHelper(TreeNode<T> root){
+        if (root == null) return 0;
+        return 1 + Math.max(maxDepthHelper(root.leftChild), maxDepthHelper(root.rightChild));
+    }
+
+    public int min() {
+        return minHelper(this.root);
+    }
+
+    private int minHelper(TreeNode<T> root) {
+        if (root == null) return Integer.MAX_VALUE;
+        return Math.min((int) root.value, Math.min(minHelper(root.leftChild), minHelper(root.rightChild)));
+    }
+
+    public int max() {
+        return this.maxHelper(this.root);
+    }
+
+    int maxHelper(TreeNode<T> root) {
+        if (root == null) return Integer.MIN_VALUE;
+        return Math.max((int) root.value, Math.max(maxHelper(root.leftChild), maxHelper(root.rightChild)));
+    }
+
+    public int size() {
+        return getSize(this.root);
+    }
+
+    public int getSize(TreeNode<T> root) {
+        if (root == null) return 0;
+        return 1 + getSize(root.leftChild) + getSize(root.rightChild);
+    }
+
+    public boolean contains(int x){
+        return containsHelper(this.root, x);
+    }
+
+    private boolean containsHelper(TreeNode<T> root, int x) {
+        if (root == null) return false;
+        if ((int) root.value == x) return true;
+        if ((Integer) root.value > x) return containsHelper(root.leftChild, x);
+        return containsHelper(root.rightChild, x);
+    }
+
+    public boolean contains(TreeNode<T> currentNode, T value) {
+        if (currentNode == null) return false;
+        if (currentNode.value == value) return true;
+        if ((int) currentNode.value < (int) value) return contains(currentNode.leftChild, value);
+        return contains(currentNode.rightChild, value);
+    }
+
+
+    public void printCurrentLevel(int level){
+        printCurrentLevelHelper(this.root, level);
+    }
+
+    void printCurrentLevelHelper(TreeNode<T> root, int level){
+        if (root == null) return;
+        if (level == 1) {
+            System.out.println(root.value);
+        }else if (level >0){
+            printCurrentLevelHelper(root.leftChild, level-1);
+            printCurrentLevelHelper(root.rightChild, level-1);
+        }
+    }
+
+    public void delete(int key){
+        deleteNodeHelper(this.root, key);
+    }
+
+    private TreeNode<T> deleteNodeHelper(TreeNode<T> root, int key) {
+        if (root == null) return root;
+        if (key < (int) root.value) {
+            deleteNodeHelper(root.leftChild, key);
+        } else if (key > (int) root.value) {
+            deleteNodeHelper(root.rightChild, key);
+        } else {
+            if (root.leftChild == null) {
+                return root.rightChild;
+            } else if (root.rightChild == null) {
+                return root.leftChild;
+            }
+            root.value = min(root.rightChild);
+            root.rightChild = deleteNodeHelper(root.rightChild, (int) root.value);
+        }
+        return root;
+    }
+
+    private T min(TreeNode<T> root) {
+        T min = root.value;
+        while (root.leftChild != null) {
+            min = root.leftChild.value;
+            root = root.leftChild;
+        }
+        return min;
+    }
+
+    public boolean isBST(boolean byRange) {
+        if (byRange) return isBSTRangeUtil(this.root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        return isBST(this.root);
+    }
+
+    private boolean isBST(TreeNode<T> node) {
+        if (node != null) {
+            if (!isBST(node.leftChild)) return false;
+            if (temp != null && (int) node.value <= (int) temp.value) {
+                return false;
+            }
+            temp = node;
+            return isBST(node.rightChild);
+        }
+        return true;
+    }
+
+    private boolean isBSTRangeUtil(TreeNode<T> root, int min, int max) {
+        if (root == null) return true;
+        if ((int) root.value < min || (int) root.value > max) return false;
+        return (isBSTRangeUtil(root.leftChild, min, (int) root.value - 1) && isBSTRangeUtil(root.rightChild, (int) root.value + 1, max));
+    }
+
+    public int floor(int key) {
+        int ans = Integer.MAX_VALUE;
+        TreeNode<T> node = this.root;
+        while (node != null) {
+            if ((Integer) node.value == key) {
+                return (Integer) node.value;
+            }
+            if ((Integer) node.value > key) {
+                node = node.leftChild;
+            } else {
+                ans = (int) node.value;
+                node = node.rightChild;
+            }
+        }
+        return ans;
+    }
+
+    public boolean isPairPresent(int target){
+        Set<Integer> set = new HashSet<>();
+        return isPairPresentHelper(this.root, target, set);
+    }
+
+    private boolean isPairPresentHelper(TreeNode<T> node, int target, Set<Integer> set) {
+        if (node == null) return false;
+        if (isPairPresentHelper(root.leftChild, target, set)) {
+            return true;
+        }
+        if (set.contains(target - (Integer) node.value)) {
+            return true;
+        }
+        set.add((Integer) node.value);
+        return isPairPresentHelper(node.rightChild, target, set);
+    }
+
+    public int ceil(int key){
+        int ans = Integer.MIN_VALUE;
+        TreeNode<Integer> node = (TreeNode<Integer>) this.root;
+        while (node!=  null){
+            if (node.value == key) return node.value;
+            if (node.value > key){
+                ans = node.value;
+                node = node.leftChild;
+            }else {
+                node = node.rightChild;
+            }
+        }
+        return ans;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///
+    /// This section contains views
+    ///
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void leftView(){
         Map<Integer, List<TreeNode<T>>> map = new HashMap<>();
         Queue<TreeNode<T>> queue = new LinkedList<>();
@@ -323,10 +500,10 @@ public class Tree<T> {
 
     public List<Object> topView(){
         Map<Integer, Integer> map = new TreeMap<>();
-        Queue<Pair<Integer, TreeNode<T>>> q = new ArrayDeque<>();
-        q.add(new Pair<>(0, this.root));
+        Queue<Util.Ds.Pair<Integer, TreeNode<T>>> q = new ArrayDeque<>();
+        q.add(new Util.Ds.Pair<>(0, this.root));
         while (!q.isEmpty()){
-            Pair<Integer, TreeNode<T>> cur = q.poll();
+            Util.Ds.Pair<Integer, TreeNode<T>> cur = q.poll();
 //            map.putIfAbsent(cur.getFirst(), (Integer) cur.getSecond().getValue());
             // map.put withOut if condition for bottom view
             if (!map.containsKey(cur.getFirst())){
@@ -334,11 +511,11 @@ public class Tree<T> {
             }
 
             if (cur.getSecond().leftChild != null){
-                q.add(new Pair<>(cur.getFirst() - 1, cur.getSecond().leftChild));
+                q.add(new Util.Ds.Pair<>(cur.getFirst() - 1, cur.getSecond().leftChild));
             }
 
             if (cur.getSecond().rightChild != null){
-                q.add(new Pair<>(cur.getFirst() + 1, cur.getSecond().rightChild));
+                q.add(new Util.Ds.Pair<>(cur.getFirst() + 1, cur.getSecond().rightChild));
             }
 
         }
@@ -349,8 +526,125 @@ public class Tree<T> {
         return list;
     }
 
+    public boolean isSymmetric() {
+        TreeNode<T> left = this.root.leftChild;
+        TreeNode<T> right = this.root.rightChild;
+        return isSymmetricHelper(left, right);
+    }
+
+    private boolean isSymmetricHelper(TreeNode<T> left, TreeNode<T> right){
+        if (left == null || right == null) {return left == right;}
+        return  left.value == right.value && isSymmetricHelper(left.leftChild, right.rightChild)
+                && isSymmetricHelper(left.rightChild, right.leftChild);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///
+    /// This section contains miscellaneous
+    ///
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     void convertToDLL(TreeNode<T> root){
+        if (root == null) return ;
+        convertToDLL(root.leftChild);
+        if (prev == null) {
+            head = new DoubleLinkedListNode<>((Integer) root.value);
+        }else {
+//            prev.l = new TreeNode<>(prev);
+        }
+        convertToDLL(root.rightChild);
+    }
+
+    public DoublyListNode treeToDoublyList(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        DoublyListNode dummy = new DoublyListNode(0);
+        DoublyListNode prev = dummy;
+        helper(root, prev);
+        // Connect the head and tail
+        dummy.next.prev = null;
+        prev.next = null;
+        return dummy.next;
+    }
+
+    private TreeNode<T> lowestCommonAncestor(TreeNode<T> root, T n1 ,T n2) {
+        if (root == null) return root;
+        if (root.value == n1 || root.value ==n2) return root;
+        TreeNode<T> left = lowestCommonAncestor(root.leftChild, n1, n2);
+        TreeNode<T> right = lowestCommonAncestor(root.rightChild, n1, n2);
+        if (left == null) return right;
+        if (right == null) return left;
+        return root;
+    }
+    public TreeNode leftCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+
+        TreeNode left = leftCommonAncestor(root.leftChild, p, q);
+        if (left != null && left != p && left != q) {
+            return left;
+        }
+
+        TreeNode right = leftCommonAncestor(root.rightChild, p, q);
+        if (right != null && right != p && right != q) {
+            return right;
+        }
+
+        if (left != null && right != null) {
+            return root;
+        } else {
+            return (left != null) ? left : right;
+        }
+    }
+
+
+    private void helper(TreeNode node, DoublyListNode prev) {
+        if (node == null) {
+            return;
+        }
+        helper(node.leftChild, prev);
+        DoublyListNode curr = new DoublyListNode((Integer) node.value);
+        prev.next = curr;
+        curr.prev = prev;
+        prev = curr;
+        helper(node.rightChild, prev);
+    }
+    class DoublyListNode {
+        int val;
+        DoublyListNode prev;
+        DoublyListNode next;
+        public DoublyListNode(int val) {
+            this.val = val;
+        }
+    }
+
+    private boolean iterative(TreeNode<T> root) {
+        Stack<TreeNode<T>> left = new Stack<>();
+        Stack<TreeNode<T>> right = new Stack<>();
+        left.push(root.leftChild);
+        right.push(root.rightChild);
+        while (left.size() > 0) {
+            TreeNode<T> l = left.pop();
+            TreeNode<T> r = right.pop();
+            if (l == null && r == null) {
+                continue;
+            }
+            if (l != null && r != null && l.value == r.value) {
+                left.push(l.leftChild);
+                right.push(r.rightChild);
+                left.push(l.rightChild);
+                right.push(r.leftChild);
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
+
     private static class TreeNode<T> {
-        private final T value;
+        private T value;
         private TreeNode<T> leftChild;
         private TreeNode<T> rightChild;
 
