@@ -5,10 +5,13 @@ import src.Util.Ds.DoubleLinkedListNode;
 
 import java.util.*;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 public class Tree<T> {
     static DoubleLinkedList<Integer> dll = new DoubleLinkedList<>();
     static DoubleLinkedListNode<Integer> prev = null , head =null;
+
+    public static int ans = -1;
     private TreeNode<T> root;
 
     private TreeNode<T> temp;
@@ -104,7 +107,7 @@ public class Tree<T> {
     }
 
     private LinkedList<T> inOrderTraversalHelper(TreeNode<T> currentNode, LinkedList<T> list) {
-        if (currentNode == null) return new LinkedList<>();
+        if (currentNode == null) return list;
         inOrderTraversalHelper(currentNode.leftChild, list);
         list.add(currentNode.value);
         inOrderTraversalHelper(currentNode.rightChild, list);
@@ -204,9 +207,27 @@ public class Tree<T> {
     }
 
     private void addIntoLevelMap(Map<Integer, List<TreeNode<T>>> map, int level, TreeNode<T> data) {
+        map.computeIfAbsent(level, k -> new ArrayList<>()).add(data);
+    }
 
-        map.computeIfAbsent(level, k -> new ArrayList<>());
-        map.get(level).add(data);
+    public ArrayList<Integer> verticalOrderTraversal() {
+        Queue<Util.Ds.Pair<Integer, TreeNode<T>>> q = new ArrayDeque<>();
+        Map<Integer, ArrayList<Integer>> levelVsValues = new WeakHashMap<>();
+        q.add(new Util.Ds.Pair<Integer, TreeNode<T>>(0, this.root));
+        while (!q.isEmpty()) {
+            Util.Ds.Pair<Integer, TreeNode<T>> cur = q.poll();
+            levelVsValues.computeIfAbsent(cur.getFirst(), k -> new ArrayList<>()).add((Integer) cur.getSecond().getValue());
+            if (cur.getSecond().leftChild != null)
+                q.add(new Util.Ds.Pair<Integer, TreeNode<T>>(cur.getFirst() - 1, cur.getSecond().leftChild));
+            if (cur.getSecond().rightChild != null)
+                q.add(new Util.Ds.Pair<Integer, TreeNode<T>>(cur.getFirst() + 1, cur.getSecond().rightChild));
+        }
+        ArrayList<Integer> ans = new ArrayList<>();
+        for (Map.Entry<Integer, ArrayList<Integer>> map : levelVsValues.entrySet()) {
+            System.out.println(map.getKey()+": "+ map.getValue());
+            ans.addAll(map.getValue());
+        }
+        return ans;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -538,6 +559,40 @@ public class Tree<T> {
                 && isSymmetricHelper(left.rightChild, right.leftChild);
     }
 
+    public int minTimeToBurn(int target) {
+        Depth depth = new Depth(-1);
+        burn(this.root, target, depth);
+        return ans;
+    }
+
+    private int burn(TreeNode<T> root, int target, Depth depth) {
+        if (root == null) return 0;
+        if ((Integer) root.value == target) {
+            depth.d = 1;
+            return 1;
+        }
+        Depth ld = new Depth(-1);
+        Depth rd = new Depth(-1);
+        int lh = burn(root.leftChild, target, depth);
+        int rh = burn(root.rightChild, target, depth);
+        if (ld.d != 1) {
+            ans = Math.max(ans, ld.d + 1 + rh);
+            depth.d = ld.d + 1;
+        } else if (rd.d != 1) {
+            ans = Math.max(rd.d + 1, lh);
+            depth.d = rd.d + 1;
+        }
+        return Math.max(lh, rh) + 1;
+    }
+
+    static class Depth {
+        int d;
+
+        public Depth(int d) {
+            this.d = d;
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///
     /// This section contains miscellaneous
@@ -568,7 +623,7 @@ public class Tree<T> {
     }
 
     private TreeNode<T> lowestCommonAncestor(TreeNode<T> root, T n1 ,T n2) {
-        if (root == null) return root;
+        if (root == null) return null;
         if (root.value == n1 || root.value ==n2) return root;
         TreeNode<T> left = lowestCommonAncestor(root.leftChild, n1, n2);
         TreeNode<T> right = lowestCommonAncestor(root.rightChild, n1, n2);
