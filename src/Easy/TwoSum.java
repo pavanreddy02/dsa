@@ -1,4 +1,4 @@
-package src.Easy;
+package Easy;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,8 +9,8 @@ import static java.util.Arrays.stream;
 
 public class TwoSum {
     public static void main(String[] args) {
-        int[] nums = {2, 7, 11, 15};
-        stream(twoSum1(nums, 9)).forEach(System.out::println);
+        int[] nums = {3,2,4};
+        stream(twoSum1(nums, 6)).forEach(System.out::println);
     }
 
     static int[] twoSum(int[] nums, int target) {
@@ -26,7 +26,7 @@ public class TwoSum {
 
     static int[] twoSum1(int[] nums, int target) {
         Map<Integer, Integer> intVsPlace = new HashMap<>();
-        for (int i = 0; i < nums.length - 1; i++) {
+        for (int i = 0; i < nums.length; i++) {
             if (intVsPlace.containsKey(target - nums[i])){
                 return new int[]{intVsPlace.get(target - nums[i]), i};
             }

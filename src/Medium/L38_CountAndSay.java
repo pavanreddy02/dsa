@@ -1,6 +1,12 @@
-package src.Medium;
+package Medium;
 
-import src.Util.Constants;
+import Util.Constants;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 
 public class L38_CountAndSay {
     static String tail = "'s";
@@ -9,6 +15,19 @@ public class L38_CountAndSay {
         String input = "3322251";
 //        System.out.println(countAndSay(Integer.parseInt(DsaUtility.reverseString(input))));
         System.out.println(countAndSay1(5));
+        Map<Integer,Integer> map = new HashMap<>();
+        map.put(9, map.getOrDefault(9, 0)+1);
+        map.computeIfAbsent(9, k -> 9);
+        int max = Integer.MIN_VALUE;
+        int maxKey =0;
+        for (Map.Entry e: map.entrySet()) {
+            System.out.println("key" + e.getKey());
+            System.out.println("value" + e.getValue());
+            max = Math.max(max, (Integer) e.getValue());
+            if((Integer) e.getValue() >= max){
+                maxKey = (int) e.getKey();
+            }
+        }
     }
 
     public static String countAndSay(int n) {
@@ -72,5 +91,27 @@ public class L38_CountAndSay {
         }
 
         return sb.toString();
+    }
+
+    public String countAndSay2(int n) {
+        if(n==1) return "1";
+//         Recursion
+        String s=countAndSay2(n-1);
+        StringBuilder res = new StringBuilder();
+        // String res="";
+        int counter=0;
+
+        for(int i=0;i<s.length();i++)
+        {
+            counter++;
+//             Segregating into groups
+            if(i==s.length()-1 || s.charAt(i)!=s.charAt(i+1))
+            {
+                res.append(counter).append(s.charAt(i));
+                // res=res+counter+s.charAt(i);
+                counter=0;
+            }
+        }
+        return res.toString();
     }
 }

@@ -1,11 +1,13 @@
-package src.Medium;
+package Medium;
 
 // Java program to print BFS traversal from a given source
 // vertex. BFS(int s) traverses vertices reachable from s.
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
+import Util.Ds.Pair;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 // This class represents a directed graph using adjacency
 // list representation
@@ -40,6 +42,7 @@ class Graph {
 //        g.BFS(2);
         g.DFS(0);
         System.out.println(isCycle());
+        topologicalSort();
     }
 
 
@@ -150,6 +153,160 @@ class Graph {
                 DFSUtil(n, visited, ans);
         }
     }
+
+    static List<Integer> topologicalSort(){
+        boolean[] vis = new boolean[V];
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < V; i++) {
+            if (!vis[i]){
+                topoDFS(adj, i, stack, vis);
+            }
+        }
+        return new ArrayList<>(stack);
+    }
+
+    @Deprecated
+    static void topoDFS(LinkedList<LinkedList<Integer>> adj, int v, Stack<Integer> stack, boolean[] vis){
+        vis[v] = true;
+        for (int neighbour: adj.get(v)) {
+            if (!vis[neighbour])
+                topoDFS(adj, neighbour, stack, vis);
+        }
+        stack.push(v);
+    }
+
+
+    static void topoBFS() {
+        int[] inDeg = new int[V];
+        adj.forEach(list -> list.forEach(e -> inDeg[e]++));
+        boolean[] vis = new boolean[V];
+        ArrayList<Integer> ansList = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            topoBfs(adj, i, vis, ansList, inDeg);
+        }
+    }
+
+    static void topoBfs(LinkedList<LinkedList<Integer>> adj, int v, boolean[] vis, ArrayList<Integer> ansList, int[] inDeg) {
+        Queue<Integer> q = IntStream.range(0, v).filter(i -> inDeg[i] == 0).boxed().collect(Collectors.toCollection(LinkedList::new));
+        while (!q.isEmpty()) {
+            int cur = q.poll();
+            ansList.add(cur);
+            for (int in : adj.get(cur)) {
+                if (--inDeg[in] == 0) q.add(in);
+            }
+        }
+    }
+
+    /*
+    * calculate the minimum dist (prims's algorithm)
+    * @param
+    *
+    * */
+    static void spanningTree(int v, ArrayList<ArrayList<ArrayList<Integer>>> adj) {
+        boolean[] vis = new boolean[v];
+        PriorityQueue<Pair<Integer, Integer>> q = new PriorityQueue<>(Comparator.comparingInt(Pair::getSecond));
+        q.add(new Pair<>(0, 0));
+        int ans = 0;
+        while (!q.isEmpty()) {
+            Pair<Integer, Integer> cur = q.poll();
+            int u = cur.getFirst();
+            if (vis[u]) continue;
+            ans += cur.getSecond();
+            vis[u] = true;
+            ArrayList<ArrayList<Integer>> neighbours = adj.get(u);
+            for (ArrayList<Integer> list : neighbours) {
+                int vertex = list.get(0);
+                int weight = list.get(1);
+                if (!vis[vertex]) q.add(new Pair<>(vertex, weight));
+            }
+
+        }
+        System.out.println(ans);
+    }
+
+    static void dijkstraAlgo (int s, int v, ArrayList<ArrayList<ArrayList<Integer>>> adj){
+        boolean[] vis = new boolean[v];
+        PriorityQueue<Pair<Integer, Integer>> q = new PriorityQueue<>();
+        q.add(new Pair<>(s, 0));
+        int[] ans = new int[v];
+        Arrays.fill(ans, Integer.MAX_VALUE);
+        ans[s] = 0;
+        while (!q.isEmpty()){
+            Pair<Integer, Integer> cur = q.poll();
+            int u = cur.getFirst();
+            if (vis[u]) continue;
+            vis[u] = true;
+            ArrayList<ArrayList<Integer>> neighbour = adj.get(u);
+            neighbour.stream().parallel().forEach(list -> {
+                int vertex = list.get(0);
+                int weight = list.get(1);
+                if (ans[vertex] > ans[u] + weight) {
+                    ans[vertex] = ans[u] + weight;
+                    q.add(new Pair<>(vertex, ans[vertex]));
+                }
+            });
+        }
+        Arrays.stream(ans).boxed().forEach(System.out::println);
+    }
+
+    /*
+    void primMST() {
+        boolean[] visited = new boolean[V];
+        int[] parent = new int[V];
+        int[] key = new int[V];
+        PriorityQueue<Pair<Integer, Integer>> queue = new PriorityQueue<>(V, Comparator.comparingInt(Pair::getSecond));
+        Arrays.fill(key, Integer.MAX_VALUE);
+        key[0] = 0;
+        parent[0] = -1;
+        queue.add(new Pair<>(0, 0));
+        List<List<Pair<Integer, Integer>>> adj1 = new ArrayList<>();
+
+        while (!queue.isEmpty()) {
+            int u = queue.poll().getFirst();
+            visited[u] = true;
+
+            for (Pair<Integer, Integer> edge : adj1.get(u)) {
+                int v = edge.getFirst();
+                int weight = edge.getSecond();
+
+                if (!visited[v] && weight < key[v]) {
+                    parent[v] = u;
+                    key[v] = weight;
+                    queue.add(new Pair<>(v, weight));
+                }
+            }
+        }
+
+        System.out.println("Edges in the MST:");
+        for (int i = 1; i < V; i++) {
+            System.out.println(parent[i] + " - " + i);
+        }
+    }
+     */
+
+    public int bellmanFordCycle(int n, int[][] edges) {
+        int[] dist = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[0] = 0;
+        for (int i = 1; i < n; i++) {
+            for (int[] edge : edges) {
+                int src = edge[0];
+                int dest = edge[1];
+                int weight = edge[2];
+                if (dist[src] != Integer.MAX_VALUE && dist[src] + weight < dist[dest]) {
+                    dist[dest] = dist[src] + weight;
+                }
+            }
+        }
+        for (int[] edge : edges) {
+            int src = edge[0];
+            int dest = edge[1];
+            int weight = edge[2];
+            if (dist[src] != Integer.MAX_VALUE && dist[src] + weight < dist[dest]) {
+                return 1;
+            }
+        }
+        return 0;
+    }
 }
-// This code is contributed by Aakash Hasija
 

@@ -1,4 +1,4 @@
-package src.Easy;
+package Easy;
 
 import java.util.Arrays;
 
@@ -9,7 +9,7 @@ public class MergeSortedArray {
         merge2(first, first.length, second, second.length);
         Arrays.stream(first).forEach(System.out::println);
     }
-
+    /*gives out of bound exception  */
     static void merge(int[] nums1, int m, int[] nums2, int n) {
         int[] result = new int[m + n];
         int i = 0;

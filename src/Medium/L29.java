@@ -1,8 +1,10 @@
-package src.Medium;
+package Medium;
+
+import java.util.Stack;
 
 public class L29 {
     public static void main(String[] args) {
-        System.out.println(divide2(18, 3));
+        System.out.println(divide1(18, 3));
 //        System.out.println(divide(18,3));
     }
 
@@ -18,7 +20,6 @@ public class L29 {
 
     static int divide2(int dividend, int divisor){
         int ans = 0;
-        int temp = 0;
         while (dividend >= divisor) {
             int shift = 0;
             while (dividend >= (divisor << shift)){
@@ -30,6 +31,13 @@ public class L29 {
         }
         return ans;
     }
+
+    /**
+     *
+     * @param dividend
+     * @param divisor
+     * @return
+     */
 
     static int divide1(int dividend, int divisor) {
         int dd = dividend;
@@ -47,6 +55,13 @@ public class L29 {
         long ldd = Math.abs((long) dd);
         long ldr = Math.abs((long) dr);
         int result = 0;
+        /**
+         * divisor i.e ld2 is left shifted ( * by 2) until <= dividend
+         * then the count is used to calculate the result by left shifting 1 to get the multiplication count
+         * then the multiplication count is added to result
+         * then the added value to result (by left shifting divisor by count times) is subtracted from the dividend
+         * and update the dividend
+         */
         while (ldd >= ldr) {
             int shift = 0;
             while (ldd >= (ldr << shift)) {

@@ -1,6 +1,6 @@
-package src.Easy;
+package Easy;
 
-import src.Util.DsaUtility;
+import Util.DsaUtility;
 
 public class ReveseBits {
     public static void main(String[] args) {
@@ -12,7 +12,7 @@ public class ReveseBits {
         int ans = 0;
         for (int i = 0; i < 32; i++)
             if ((n >> i & 1) == 1)
-                ans |= 1 << 31 - i;
+                ans = ans | 1 << 31 - i;
         return ans;
     }
 }

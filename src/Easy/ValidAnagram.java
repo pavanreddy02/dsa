@@ -3,21 +3,20 @@ package src.Easy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ValidAnagram {
-//    public static void main(String[] args) {
-//        String s = "anagram";
-////        List<Character> l1 = IntStream.range(0, s.length()).mapToObj(s::charAt).toList();
-//        String s2 = "nagaram";
-////        List<Character> l2 = IntStream.range(0, s2.length()).mapToObj(s2::charAt).toList();
-//        List<Character> l2 = new ArrayList<>();
-//        List<Character> l1 = new ArrayList<>();
-//        for (int i = 0; i < s2.length(); i++) {
-//            l2.add(s2.charAt(i));
-//            l1.add(s.charAt(i));
-//        }
-//        System.out.println(isAnagram(l1, l2));
-//    }
+    public static void main(String[] args) {
+        String s = "anagram";
+        s.toCharArray();
+//        List<Character> l1 = IntStream.range(0, s.length()).mapToObj(s::charAt).toList();
+        String s2 = "nagaram";
+//        List<Character> l2 = IntStream.range(0, s2.length()).mapToObj(s2::charAt).toList();
+        List<Character> l1 = new ArrayList<>();
+        List<Character> l2 = IntStream.range(0, s2.length()).mapToObj(s2::charAt).collect(Collectors.toList());
+        System.out.println(isAnagram(l1, l2));
+    }
 
     public static boolean isAnagram(List<Character> l2temp, List<Character> l1emp) {
         if (l1emp.size() != l2temp.size()) return false;

@@ -1,4 +1,4 @@
-package src.Medium;
+package Medium;
 
 public class L54SpiralMAtrix {
 }

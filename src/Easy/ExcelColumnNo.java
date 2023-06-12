@@ -1,4 +1,4 @@
-package src.Easy;
+package Easy;
 
 public class ExcelColumnNo {
     public static void main(String[] args) {

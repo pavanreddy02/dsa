@@ -61,7 +61,7 @@ public class LinkedList<T> {
         }
         this.head = previous;
     }
-
+    //recursiveReverse and recursiveReverse1 both are same
     public LinkedListNode<T> recursiveReverse(LinkedListNode<T> head) {
         if (head == null || head.next == null) {
             return head;
@@ -72,14 +72,15 @@ public class LinkedList<T> {
         return reversed;
     }
 
-    public LinkedListNode<T> recursiveReverse() {
-        if (this.head == null || this.head.next == null) {
-            return this.head;
+    public LinkedListNode<T> recursiveReverse1(LinkedListNode<T> head) {
+        if (head == null || head.next == null) {
+            return head;
         }
-        LinkedListNode<T> reversed = recursiveReverse();
-        head.next.next = head;
+        LinkedListNode<T> newHead_reversedNode = recursiveReverse1(head.next);
+        LinkedListNode<T> headNext = head.next;
+        headNext.next = head;
         head.next = null;
-        return reversed;
+        return newHead_reversedNode;
     }
 
     public void reverse() {
@@ -118,7 +119,7 @@ public class LinkedList<T> {
             slow = slow.next;
             fast = fast.next.next;
         }
-        LinkedListNode<T> secondHalf = recursiveReverse(slow);
+        LinkedListNode<T> secondHalf = recursiveReverse1(slow);
         LinkedListNode<T> firstHalf = this.head;
         while (secondHalf != null) {
             if (secondHalf.data != firstHalf.data) return false;
@@ -129,17 +130,16 @@ public class LinkedList<T> {
         return true;
     }
 
-    // correct the below method
     public Object intersectionOfLists(LinkedList<Integer> l1, LinkedList<Integer> l2){
         LinkedListNode<Integer> a = l1.head;
         LinkedListNode<Integer> b = l2.head;
 
         while (!a.equals(b)) {
-            a = a == null ? a : a.next;
-            b = b == null ? b : b.next;
+            a = a == null ? l2.head : a.next;
+            b = b == null ? l1.head : b.next;
         }
 
-        return a.data;
+        return a;
     }
 
     public void mergeList(LinkedList<Integer> l1, LinkedList<Integer> l2) {

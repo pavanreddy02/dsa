@@ -1,9 +1,6 @@
 package Easy;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.System.*;
 
@@ -18,5 +15,9 @@ public class ContainsDuplicate {
                 return;
             }
         out.println("Does not ContainsDuplicate");
+    }
+    public boolean containsDuplicate(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        return Arrays.stream(nums).anyMatch(i -> !set.add(i));
     }
 }

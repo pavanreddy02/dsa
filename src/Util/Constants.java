@@ -1,4 +1,4 @@
-package src.Util;
+package Util;
 
 public class Constants {
     public final static String space = " ";

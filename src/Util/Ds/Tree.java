@@ -559,6 +559,48 @@ public class Tree<T> {
                 && isSymmetricHelper(left.rightChild, right.leftChild);
     }
 
+    public boolean isSymmetricIterative(TreeNode root) {
+        if(root==null)  return true;
+
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+        TreeNode left, right;
+        if(root.leftChild!=null){
+            if(root.rightChild==null) return false;
+            stack.push(root.leftChild);
+            stack.push(root.rightChild);
+        }
+        else if(root.rightChild!=null){
+            return false;
+        }
+
+        while(!stack.empty()){
+            if(stack.size()%2!=0)   return false;
+            right = stack.pop();
+            left = stack.pop();
+            if(right.value!=left.value) return false;
+
+            if(left.leftChild!=null){
+                if(right.rightChild==null)   return false;
+                stack.push(left.leftChild);
+                stack.push(right.rightChild);
+            }
+            else if(right.rightChild!=null){
+                return false;
+            }
+
+            if(left.rightChild!=null){
+                if(right.leftChild==null)   return false;
+                stack.push(left.rightChild);
+                stack.push(right.leftChild);
+            }
+            else if(right.leftChild!=null){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public int minTimeToBurn(int target) {
         Depth depth = new Depth(-1);
         burn(this.root, target, depth);

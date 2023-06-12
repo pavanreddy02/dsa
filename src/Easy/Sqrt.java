@@ -1,4 +1,4 @@
-package src.Easy;
+package Easy;
 
 public class Sqrt {
     public static void main(String[] args) {
@@ -7,28 +7,19 @@ public class Sqrt {
     }
 
     static int mySqrt(int x) {
-        int temp = x;
-        int count = 0;
-        while (x >1){
-            count++;
-            x /= 2;
-        }
-        return temp/count;
+        long r = x;
+        while (r*r > x) r = (r + x/r) / 2;
+        return (int) r;
     }
     public int mySqrt1(long x) {
-        long l = 1;
-        long r = x + 1;
-
-        while (l < r) {
-            final long m = (l + r) / 2;
-            if (m > x/m){
-                r = m;
-            }else {
-                l = m+1;
-            }
+        if(x==0) return 0;
+        long low = 1,high = x,ans =0;
+        while(low<=high){
+            long mid =low + (high-low)/2;
+            if(x/mid==mid)  return (int) mid;
+            else if(x/mid<mid)   high=mid-1;
+            else {low = mid+1; ans = mid;}
         }
-
-        // l: smallest number s.t. l * l > x
-        return (int) l - 1;
+        return (int) ans;
     }
 }

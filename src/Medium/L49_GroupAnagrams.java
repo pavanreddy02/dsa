@@ -1,4 +1,4 @@
-package src.Medium;
+package Medium;
 
 import src.Easy.ValidAnagram;
 
@@ -12,22 +12,38 @@ public class L49_GroupAnagrams {
 
     public static List<List<String>> groupAnagrams(String[] strs) {
         List<List<String>> ans = new ArrayList<>();
-
-        for (int i = 0; i < strs.length; i++) {
-            String temp = strs[i];
-            List<String> small = new ArrayList<>();
-            if (Objects.equals(temp, "")) continue;
-            for (int j = i + 1; j < strs.length; j++) {
-                if (ValidAnagram.isAnagram(temp, strs[j])) {
-                    small.add(strs[j]);
-                    strs[j] = "";
+        for(int i=0; i < strs.length; i++){
+            String te = strs[i];
+            List<String> temp = new ArrayList<>();
+            if (Objects.equals(te, "")) continue;
+            for(int j=i+1; i < strs.length; i++){
+                if(ValidAnagram.isAnagram(te, strs[j])){
+                    temp.add(strs[j]);
+                    strs[j] ="";
                 }
             }
-            small.add(temp);
-            ans.add(small);
+            temp.add(te);
+            ans.add(temp);
         }
 
         return ans;
+//        List<List<String>> ans = new ArrayList<>();
+//
+//        for (int i = 0; i < strs.length; i++) {
+//            String temp = strs[i];
+//            List<String> small = new ArrayList<>();
+//            if (Objects.equals(temp, "")) continue;
+//            for (int j = i + 1; j < strs.length; j++) {
+//                if (ValidAnagram.isAnagram(temp, strs[j])) {
+//                    small.add(strs[j]);
+//                    strs[j] = "";
+//                }
+//            }
+//            small.add(temp);
+//            ans.add(small);
+//        }
+//
+//        return ans;
     }
 
     public static List<List<String>> groupAnagrams1(String[] strs) {

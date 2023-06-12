@@ -1,6 +1,7 @@
-package src.Medium;
+package Medium;
 
-import src.Util.DsaUtility;
+
+import Util.DsaUtility;
 
 import java.util.Arrays;
 

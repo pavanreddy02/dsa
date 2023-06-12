@@ -1,6 +1,7 @@
-package src.Medium;
+package Medium;
 
-import src.Util.DsaUtility;
+
+import Util.DsaUtility;
 
 public class L7 {
     public static void main(String[] args) {
