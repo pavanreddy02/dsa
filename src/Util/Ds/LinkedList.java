@@ -61,7 +61,7 @@ public class LinkedList<T> {
         }
         this.head = previous;
     }
-
+    //recursiveReverse and recursiveReverse1 both are same
     public LinkedListNode<T> recursiveReverse(LinkedListNode<T> head) {
         if (head == null || head.next == null) {
             return head;
@@ -72,14 +72,15 @@ public class LinkedList<T> {
         return reversed;
     }
 
-    public LinkedListNode<T> recursiveReverse() {
-        if (this.head == null || this.head.next == null) {
-            return this.head;
+    public LinkedListNode<T> recursiveReverse1(LinkedListNode<T> head) {
+        if (head == null || head.next == null) {
+            return head;
         }
-        LinkedListNode<T> reversed = recursiveReverse();
-        head.next.next = head;
+        LinkedListNode<T> newHead_reversedNode = recursiveReverse1(head.next);
+        LinkedListNode<T> headNext = head.next;
+        headNext.next = head;
         head.next = null;
-        return reversed;
+        return newHead_reversedNode;
     }
 
     public void reverse() {
@@ -118,7 +119,7 @@ public class LinkedList<T> {
             slow = slow.next;
             fast = fast.next.next;
         }
-        LinkedListNode<T> secondHalf = recursiveReverse(slow);
+        LinkedListNode<T> secondHalf = recursiveReverse1(slow);
         LinkedListNode<T> firstHalf = this.head;
         while (secondHalf != null) {
             if (secondHalf.data != firstHalf.data) return false;
@@ -129,8 +130,7 @@ public class LinkedList<T> {
         return true;
     }
 
-    // correct the below method
-    public LinkedListNode<Integer> intersectionOfLists(LinkedList<Integer> l1, LinkedList<Integer> l2){
+    public Object intersectionOfLists(LinkedList<Integer> l1, LinkedList<Integer> l2){
         LinkedListNode<Integer> a = l1.head;
         LinkedListNode<Integer> b = l2.head;
 
@@ -180,12 +180,100 @@ public class LinkedList<T> {
                 carry = carry + n1.data;
                 n1 = n1.next;
             }
+            // check if value to passed is carry or carry % 10
             LinkedListNode<Integer> temp = new LinkedListNode<>(carry);
             res.next = temp;
             carry = carry > 10 ? carry / 10 : 0;
         }
         if (carry > 0 ) res.next = new LinkedListNode<>(carry);
         return res.next;
+    }
+
+    public boolean hasCycle(){
+        LinkedListNode<T> fast= this.head;
+        LinkedListNode<T> slow= this.head;
+        while (fast.next!= null && slow!= null){
+            slow= slow.next;
+            fast = fast.next.next;
+            if (fast == slow){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void remove(int index){
+        if (index == 0){
+            this.head = head.next;
+        }else if (index == 1){
+            this.head.next = this.head.next.next;
+        }else {
+            removeHelper(this.head, index);
+        }
+    }
+
+    public void insert(int index, T value){
+        insertHelper(new LinkedListNode<>(value), index);
+    }
+
+    private void insertHelper(LinkedListNode<T> newNode, int index){
+        if (index == 0){
+            newNode.next= this.head;
+            this.head = newNode;
+            return;
+        }
+        LinkedListNode<T> prev = this.head;
+        for (int i = 0; i < index-1; i++) {
+            prev = prev.next;
+        }
+        newNode.next = prev.next;
+        prev.next = newNode;
+    }
+
+    private void removeHelperOpt(int index){
+        LinkedListNode<T> prev = this.head;
+        for (int i = 0; i < index-1; i++) {
+            prev = prev.next;
+        }
+        prev.next = prev.next.next;
+    }
+    private void removeHelper(LinkedListNode<T> head, int index){
+        LinkedListNode<T> temp = this.head;
+        int count = 0;
+        while (temp != null){
+            if (count == index-1){
+                temp.next = temp.next.next;
+                count++;
+                break;
+            }else {
+                temp = temp.next;
+                count++;
+            }
+        }
+        if (count < index){
+            throw new ArrayIndexOutOfBoundsException("Out Of Bound index:"+ index);
+        }
+    }
+
+    public void removeNthFromEnd(int index){
+        this.head= removeNthFromEnd(this.head, index);
+    }
+    private LinkedListNode removeNthFromEnd(LinkedListNode head, int n) {
+        LinkedListNode slow = head;
+        LinkedListNode fast = head;
+
+        while (n-- > 0)
+            fast = fast.next;
+        if (fast == null)
+            return head.next;
+
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        slow.next = slow.next.next;
+
+        return head;
     }
 
     @Override
@@ -227,7 +315,6 @@ class LinkedListNode<T> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(data);
+        return Objects.hash(next, data);
     }
-
 }

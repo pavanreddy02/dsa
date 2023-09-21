@@ -24,10 +24,9 @@ public class L5 {
     }
 
     public static int[] checkRange(String s, int i, int j) {
-        for (; i >= 0 && j < s.length(); i--, j++) {
-            if (s.charAt(i) != s.charAt(j)) {
-                break;
-            }
+        while (i >= 0 && j < s.length() && s.charAt(i) != s.charAt(j)) {
+            i--;
+            j++;
         }
         return new int[]{i + 1, j - 1};
     }

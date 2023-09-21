@@ -15,7 +15,8 @@ public class LevelOrderTraversal {
         tree.levelOrderTraversalByQueue(true);
         System.out.println("===================");
 //        tree.leftView();
-        tree.printRightView();
+//        tree.printRightView();
+        System.out.println(tree.verticalOrderTraversal());
     }
 
     public static void levelOrderTraversal(Tree<Integer> tree) {

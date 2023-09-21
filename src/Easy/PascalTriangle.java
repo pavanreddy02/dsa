@@ -7,16 +7,15 @@ import java.util.List;
 
 public class PascalTriangle {
     public static void main(String[] args) {
-        System.out.println("hr");
         long start = System.currentTimeMillis();
         System.out.println(start);
-        List<List<Integer>> lists = pascalTriangleGeneric(1000);
+        List<List<Integer>> lists = pascalTriangleGeneric(10);
         System.out.println(System.currentTimeMillis() - start);
         start = System.currentTimeMillis();
         System.out.println(start);
-        List<List<Integer>> lists1 = generate(1000);
+        List<List<Integer>> lists1 = generate(10);
         System.out.println(System.currentTimeMillis() - start);
-//        System.out.println(lists);
+        lists1.forEach(System.out::println);
     }
 
     static List<List<Integer>> pascalTriangleGeneric(int noOfRows) {
