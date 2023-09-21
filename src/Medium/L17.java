@@ -11,17 +11,19 @@ public class L17 {
         keypad.put("4", new LinkedList<>(Arrays.asList("g", "h", "i")));
         phoneNoCombinations("234");
     }
-    static void phoneNoCombinations(String phoneNumber){
-        for (int i = 0; i < phoneNumber.length(); i++) {
-            String t = String.valueOf(phoneNumber.charAt(i));
-            List<String> local = keypad.get(t);
-            for (int s = 0; s <local.size() ; s++) {
-                for (int j = i+1; j < phoneNumber.length(); j++) {
-                    List<String> next = keypad.get(String.valueOf(phoneNumber.charAt(j)));
-                    int finalS = s;
-                    next.forEach(k -> System.out.println(local.get(finalS) + k));
-                }
+
+    static List<String> phoneNoCombinations(String digits) {
+        LinkedList<String> ans = new LinkedList<>();
+        if (digits.isEmpty()) return ans;
+        String[] mapping = new String[]{"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        ans.add("");
+        for (int i = 0; i < digits.length(); i++) {
+            int x = Character.getNumericValue(digits.charAt(i));
+            while (ans.peek().length() == i) {
+                String t = ans.remove();
+                for (char s : mapping[x].toCharArray()) ans.add(t + s);
             }
         }
+        return ans;
     }
 }

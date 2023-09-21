@@ -1,5 +1,6 @@
 package Easy;
 
+
 import Util.DsaUtility;
 
 import java.util.ArrayList;
@@ -13,14 +14,19 @@ public class ValidPalindrome {
         System.out.println(validPalindrome("A man, a plan, a canal: Panama"));
     }
     static boolean validPalindrome(String s) throws Exception {
-        String s1 =s;
-       s1= s1.replaceAll(" ", "");
-       s1 = s1.replaceAll(",","");
-       s1 = s1.replaceAll(":","");
-        String reversed = DsaUtility.reverseString(s1);
-       if (!s1.equalsIgnoreCase(reversed)) {
-           throw new Exception("invalid input");
-       }
+        if (s.isEmpty()) return true;
+        int l =0;
+        int r = s.length()-1;
+        while (l <= r){
+            char sc = s.charAt(l);
+            char rc = s.charAt(r);
+            if (!Character.isLetterOrDigit(sc)) l++;
+            else if (!Character.isLetterOrDigit(rc)) r--;
+            else {
+                if (Character.toLowerCase(sc) != Character.toLowerCase(rc)) return false;
+                l++; r--;
+            }
+        }
         return true;
     }
 }

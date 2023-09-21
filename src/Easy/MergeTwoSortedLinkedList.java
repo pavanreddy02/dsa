@@ -1,4 +1,4 @@
-package Easy;
+package src.Easy;
 
 import Util.Ds.LinkedList;
 

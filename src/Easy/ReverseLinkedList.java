@@ -2,6 +2,9 @@ package Easy;
 
 import Util.Ds.LinkedList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReverseLinkedList {
     public static void main(String[] args) {
        LinkedList<Integer> iList = new LinkedList<>();
@@ -14,5 +17,12 @@ public class ReverseLinkedList {
         iList.reverse(iList);
         System.out.println("=================");
         iList.printValues(iList);
+        String str = "df";
+        List<Character> ch = new ArrayList<>();
+        for (char c: str.toCharArray()) {
+            ch.add(c);
+        }
+//        ch.indexOf()
+        ch.remove('d');
     }
 }

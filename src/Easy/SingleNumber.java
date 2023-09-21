@@ -31,10 +31,6 @@ public class SingleNumber {
     }
 
     static int singleNumberBitManipulation(int[] input) {
-        int ans = 0;
-        for (int a : input) {
-            ans ^= a;
-        }
-        return ans;
+        return Arrays.stream(input).reduce(0, (a1, b) -> a1 ^ b);
     }
 }
