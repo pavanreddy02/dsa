@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class L146_LRUCache {
-    private static LinkedHashMap<Integer, Integer> map = new LinkedHashMap<Integer, Integer>(5, 0.75f, true){
+    private static LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>(5, 0.75f, true) {
         protected boolean removeEldestEntry(Map.Entry eldest) {
             return size() > 5;
         }
