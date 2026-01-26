@@ -5,12 +5,12 @@ public class Graph {
     public static void main(String[] args) {
         int v = 7;
         int e = 10;
-        int [][] adj = new int[v+1][v+1];
+        int[][] adj = new int[v + 1][v + 1];
         ArrayList<LinkedList<Integer>> adjList = getSampleAdjList();
         bfs(1, adjList, v);
     }
 
-    static void addEdge(int u, int v, int [][] adj) {
+    static void addEdge(int u, int v, int[][] adj) {
         adj[u][v] = 1;
         adj[v][u] = 1;
     }
@@ -19,6 +19,7 @@ public class Graph {
         adjList.get(u).add(v);
         adjList.get(v).add(u);
     }
+
     // bfs
     static void bfs(int start, ArrayList<LinkedList<Integer>> adjList, int v) {
         boolean[] visited = new boolean[v + 1]; // To keep track of visited nodes
@@ -171,58 +172,7 @@ public class Graph {
         }
         System.out.println();
     }
-    
-    public int countConnectedComponents(ArrayList<LinkedList<Integer>> adjList, int v) {
-        boolean[] visited = new boolean[v + 1];
-        int count = 0;
-        for (int i = 1; i <= v; i++) {
-            if (!visited[i]) {
-                count++;
-                dfs(i, visited, adjList);
-            }
-        }
-        return count;
-    }
 
-    private void dfs(int u, boolean[] visited, ArrayList<LinkedList<Integer>> adjList) {
-        visited[u] = true;
-        for (int v : adjList.get(u)) {
-            if (!visited[v]) {
-                dfs(v, visited, adjList);
-            }
-        }
-    }
-
-    public List<List<Integer>> findConnectedComponentsBFS(ArrayList<LinkedList<Integer>> adjList, int v) {
-        List<List<Integer>> components = new ArrayList<>();
-        boolean[] visited = new boolean[v + 1];
-
-        for (int i = 1; i <= v; i++) {
-            if (!visited[i]) {
-                List<Integer> component = new ArrayList<>();
-                LinkedList<Integer> queue = new LinkedList<>();
-
-                visited[i] = true;
-                queue.add(i);
-
-                while (!queue.isEmpty()) {
-                    int current = queue.poll();
-                    component.add(current);
-
-                    for (int neighbor : adjList.get(current)) {
-                        if (!visited[neighbor]) {
-                            visited[neighbor] = true;
-                            queue.add(neighbor);
-                        }
-                    }
-                }
-                components.add(component);
-            }
-        }
-        return components;
-    }
-
-    
     public static ArrayList<LinkedList<Integer>> getSampleAdjList() {
         int v = 7;
         ArrayList<LinkedList<Integer>> adjList = new ArrayList<>(v + 1);
@@ -287,6 +237,66 @@ public class Graph {
         return false; // No cycle found
     }
 
+    public static void topologicalDfs(int u, ArrayList<LinkedList<Integer>> adjList, boolean[] vis, Stack<Integer> stack) {
+        vis[u] = true;
+        for (int neighbour : adjList.get(u)) {
+            if (!vis[neighbour]) {
+                topologicalDfs(neighbour, adjList, vis, stack);
+            }
+        }
+        stack.push(u);
+    }
+
+    public int countConnectedComponents(ArrayList<LinkedList<Integer>> adjList, int v) {
+        boolean[] visited = new boolean[v + 1];
+        int count = 0;
+        for (int i = 1; i <= v; i++) {
+            if (!visited[i]) {
+                count++;
+                dfs(i, visited, adjList);
+            }
+        }
+        return count;
+    }
+
+    private void dfs(int u, boolean[] visited, ArrayList<LinkedList<Integer>> adjList) {
+        visited[u] = true;
+        for (int v : adjList.get(u)) {
+            if (!visited[v]) {
+                dfs(v, visited, adjList);
+            }
+        }
+    }
+
+    public List<List<Integer>> findConnectedComponentsBFS(ArrayList<LinkedList<Integer>> adjList, int v) {
+        List<List<Integer>> components = new ArrayList<>();
+        boolean[] visited = new boolean[v + 1];
+
+        for (int i = 1; i <= v; i++) {
+            if (!visited[i]) {
+                List<Integer> component = new ArrayList<>();
+                LinkedList<Integer> queue = new LinkedList<>();
+
+                visited[i] = true;
+                queue.add(i);
+
+                while (!queue.isEmpty()) {
+                    int current = queue.poll();
+                    component.add(current);
+
+                    for (int neighbor : adjList.get(current)) {
+                        if (!visited[neighbor]) {
+                            visited[neighbor] = true;
+                            queue.add(neighbor);
+                        }
+                    }
+                }
+                components.add(component);
+            }
+        }
+        return components;
+    }
+
     /**
      * Detects if a directed graph contains a cycle using Kahn's algorithm (BFS-based topological sort).
      *
@@ -317,7 +327,7 @@ public class Graph {
      * </ol>
      *
      * @param adjList The adjacency list representation of the directed graph.
-     * @param v The total number of vertices in the graph.
+     * @param v       The total number of vertices in the graph.
      * @return {@code true} if a cycle is detected, {@code false} otherwise.
      */
     public boolean detectCycleDirectedBFS(ArrayList<LinkedList<Integer>> adjList, int v) {
@@ -351,6 +361,33 @@ public class Graph {
         return count != v;
     }
 
+    public List<Integer> topologicalSortBfs(ArrayList<LinkedList<Integer>> adjList, int v) {
+        List<Integer> ans = new ArrayList<>();
+        int[] inDegree = new int[v + 1];
+        for (int i = 1; i <= v; i++) {
+            for (int neighbor : adjList.get(i)) {
+                inDegree[neighbor]++;
+            }
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 1; i <= v; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+        while (!queue.isEmpty()) {
+            int curr = queue.poll();
+            ans.add(curr);
+            for (int neighbor : adjList.get(curr)) {
+                inDegree[neighbor]--;
+                if (inDegree[neighbor] == 0) {
+                    queue.add(neighbor);
+                }
+            }
+        }
+        return ans;
+    }
+
     // detect cycle in a directed graph using dfs
     public boolean detectCycleDirectedDFS(ArrayList<LinkedList<Integer>> adjList, int v) {
         boolean[] visited = new boolean[v + 1];
@@ -382,6 +419,170 @@ public class Graph {
 
         recursionStack[u] = false;
         return false;
+    }
+
+    // topological sort using dfs
+    public List<Integer> topologicalSortDFS(ArrayList<LinkedList<Integer>> adjList, int v) {
+        boolean[] visited = new boolean[v + 1];
+        LinkedList<Integer> stack = new LinkedList<>();
+
+        for (int i = 1; i <= v; i++) {
+            if (!visited[i]) {
+                topologicalSortDFSHelper(i, visited, stack, adjList);
+            }
+        }
+
+        return stack;
+    }
+
+    private void topologicalSortDFSHelper(int u, boolean[] visited, LinkedList<Integer> stack, ArrayList<LinkedList<Integer>> adjList) {
+        visited[u] = true;
+
+        for (int neighbor : adjList.get(u)) {
+            if (!visited[neighbor]) {
+                topologicalSortDFSHelper(neighbor, visited, stack, adjList);
+            }
+        }
+
+        stack.addFirst(u);
+    }
+
+    public List<Integer> topologicalSort(ArrayList<LinkedList<Integer>> adjList, int V) {
+        boolean[] vis = new boolean[V + 1];
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 1; i <= V; i++) {
+            if (!vis[i]) {
+                topologicalDfs(i, adjList, vis, stack);
+            }
+        }
+        List<Integer> result = new ArrayList<>();
+        while (!stack.isEmpty()) {
+            result.add(stack.pop());
+        }
+        return result;
+
+    }
+
+    // prims algorithm min spanning tree
+
+    // Inner class to represent a node in the priority queue
+    static class Node implements Comparator<Node> {
+        private int v;
+        private int weight;
+
+        Node(int v, int weight) {
+            this.v = v;
+            this.weight = weight;
+        }
+
+        Node() {}
+
+        public int getV() {
+            return v;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+
+        @Override
+        public int compare(Node node1, Node node2) {
+            if (node1.weight < node2.weight)
+                return -1;
+            if (node1.weight > node2.weight)
+                return 1;
+            return 0;
+        }
+    }
+
+    /**
+     * Prim's Algorithm to find the Minimum Spanning Tree (MST) using a Priority Queue.
+     * Time Complexity: O(E log V)
+     *
+     * @param adjList Adjacency list representation of the graph with weighted edges.
+     * @param V       Number of vertices.
+     */
+    public void primsMST_ELogV(ArrayList<ArrayList<Node>> adjList, int V) {
+        int[] parent = new int[V];
+        int[] key = new int[V];
+        boolean[] visited = new boolean[V];
+
+        for (int i = 0; i < V; i++) {
+            key[i] = Integer.MAX_VALUE;
+            visited[i] = false;
+        }
+
+        PriorityQueue<Node> pq = new PriorityQueue<>(V, new Node());
+
+        key[0] = 0;
+        parent[0] = -1;
+        pq.add(new Node(0, key[0]));
+
+        for (int count = 0; count < V - 1; count++) {
+            int u = pq.poll().getV();
+            visited[u] = true;
+
+            for (Node neighbour : adjList.get(u)) {
+                if (!visited[neighbour.getV()] && neighbour.getWeight() < key[neighbour.getV()]) {
+                    parent[neighbour.getV()] = u;
+                    key[neighbour.getV()] = neighbour.getWeight();
+                    pq.add(new Node(neighbour.getV(), key[neighbour.getV()]));
+                }
+            }
+        }
+
+        // Print the MST
+        for (int i = 1; i < V; i++) {
+            System.out.println(parent[i] + " - " + i);
+        }
+    }
+
+
+    /**
+     * Prim's Algorithm to find the Minimum Spanning Tree (MST) using an Adjacency Matrix.
+     * Time Complexity: O(V^2)
+     *
+     * @param adjMatrix Adjacency matrix representation of the graph.
+     * @param V         Number of vertices.
+     */
+    public void primsMST_V2(int[][] adjMatrix, int V) {
+        int[] parent = new int[V];
+        int[] key = new int[V];
+        boolean[] visited = new boolean[V];
+
+        for (int i = 0; i < V; i++) {
+            key[i] = Integer.MAX_VALUE;
+            visited[i] = false;
+        }
+
+        key[0] = 0;
+        parent[0] = -1;
+
+        for (int count = 0; count < V - 1; count++) {
+            int min = Integer.MAX_VALUE, u = -1;
+
+            for (int v = 0; v < V; v++) {
+                if (!visited[v] && key[v] < min) {
+                    min = key[v];
+                    u = v;
+                }
+            }
+            
+            if(u == -1) continue;
+
+            visited[u] = true;
+
+            for (int v = 0; v < V; v++) {
+                if (adjMatrix[u][v] != 0 && !visited[v] && adjMatrix[u][v] < key[v]) {
+                    parent[v] = u;
+                    key[v] = adjMatrix[u][v];
+                }
+            }
+        }
+        // Print the MST
+        for (int i = 1; i < V; i++) {
+            System.out.println(parent[i] + " - " + i);
+        }
     }
 
 }
